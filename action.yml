@@ -12,6 +12,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout repo.
+      uses: actions/checkout@v4
+
     - name: Loading OutputLibs
       shell: bash
       run: |
