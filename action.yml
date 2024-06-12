@@ -18,9 +18,7 @@ runs:
     - name: Loading OutputLibs
       shell: bash
       run: |
-        pushd ${{ github.action_path }} || exit 1
-        
-        source "./lib/CI_LIBS.sh"
+        source "${{ github.action_path }}/lib/CI_LIBS.sh"
         echo_info "CI_LIBS was loaded." >&2
         
         echo_info "Checking JFrog CLI." >&2
