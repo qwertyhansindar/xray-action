@@ -1,0 +1,50 @@
+name: 'Run XRay Scan'
+description: 'Will execute XRay scan of provided artifact'
+author: ''
+inputs:
+  build_name:
+    description: 'Name of the build to scan'
+    required: true
+  build_number:
+    description: 'Number of the build to scan'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Loading OutputLibs
+      shell: bash
+      run: |
+        pushd ${{ github.action_path }} || exit 1
+        
+        source "./lib/CI_LIBS.sh"
+        echo_info "CI_LIBS was loaded." >&2
+        
+        echo_info "Checking JFrog CLI." >&2
+        if ! command -v "jfcli" > /dev/null; then
+          echo_error "JFrog CLI was not found in the system." >&2
+          exit 1
+        fi
+        
+        jf --version
+        jf c show
+        jf rt ping
+        
+        echo_info "Checking env Var" >&2
+        echo_info "BUILD_NAME='${INPUT_BUILD_NAME}'" >&2
+        echo_info "BUILD_NUMBER='${INPUT_BUILD_NUMBER}'" >&2
+#
+#    - name: Random Number Generator
+#      id: random-number-generator
+#      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+#      shell: bash
+#
+#    - name: Set GitHub Path
+#      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+#      shell: bash
+#      env:
+#        GITHUB_ACTION_PATH: ${{ github.action_path }}
+#
+#    - name: Run goodbye.sh
+#      run: goodbye.sh
+#      shell: bash
