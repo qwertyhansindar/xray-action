@@ -12,13 +12,19 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
     - name: Loading OutputLibs
       shell: bash
       run: |
         pwd
         ls -lsa
         
-        source "./lib/CI_LIBS.sh"
+        source "${GITHUB_ACTION_PATH}/lib/CI_LIBS.sh"
         echo_info "CI_LIBS was loaded." >&2
         
         echo_info "Checking JFrog CLI." >&2
