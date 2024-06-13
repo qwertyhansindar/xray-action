@@ -28,7 +28,7 @@ runs:
         echo_info "CI_LIBS was loaded." >&2
         
         echo_info "Checking JFrog CLI." >&2
-        if ! command -v "jfcli" > /dev/null; then
+        if ! command -v "jf" > /dev/null; then
           echo_error "JFrog CLI was not found in the system." >&2
           exit 1
         fi
