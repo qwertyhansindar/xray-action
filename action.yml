@@ -18,11 +18,32 @@ runs:
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
 
-    - name: Loading OutputLibs
+    - name: Checking inputs
       shell: bash
       env:
         BUILD_NAME: ${{ inputs.build_name }}
         BUILD_NUMBER: ${{ inputs.build_number }}
+      run: |
+        source "${GITHUB_ACTION_PATH}/lib/CI_LIBS.sh"
+        
+        ci_error=0
+        
+        for var in BUILD_NAME BUILD_NUMBER; do
+          if [ -z "${!var}" ]; then
+            echo_error "${var} was not provided or empty." >&2
+            ci_error=1
+          fi
+          
+          echo "${var}=${!var}" >> $GITHUB_PATH
+        done
+        
+        if [ "${ci_error}" -ne 0 ]; then
+          echo_error "Not all inputs was provided" >&2
+          exit 1
+        fi
+
+    - name: Checking pre-requisites
+      shell: bash
       run: |
         pwd
         ls -lsa
@@ -39,10 +60,6 @@ runs:
         jf --version
         jf c show
         jf rt ping
-        
-        echo_info "Checking env Var" >&2
-        echo_info "BUILD_NAME='${BUILD_NAME}'" >&2
-        echo_info "BUILD_NUMBER='${BUILD_NUMBER}'" >&2
 
 #    - name: Random Number Generator
 #      id: random-number-generator
